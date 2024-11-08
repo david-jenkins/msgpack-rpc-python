@@ -5,12 +5,18 @@
 # This allows building sdist without installing any 3rd party packages.
 exec(open('msgpackrpc/_version.py').read())
 
+import os
 import platform
+import sys
+import warnings
 
+USE_SETUP_TOOLS = False
 try:
     from setuptools import setup
 except ImportError:
     from distutils.core import setup
+else:
+    USE_SETUP_TOOLS = True
 
 from distutils.core import Extension
 
@@ -90,7 +96,7 @@ if (platform.python_implementation() == 'CPython' and
         kwargs['cmdclass'] = {'build_ext': custom_build_ext}
 
 tornado_install_requires = []
-if setuptools is not None:
+if USE_SETUP_TOOLS:
     # If setuptools is not available, you're on your own for dependencies.
     if sys.version_info < (2, 7):
         # Only needed indirectly, for singledispatch.
